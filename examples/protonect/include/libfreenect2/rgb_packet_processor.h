@@ -81,5 +81,20 @@ private:
   TurboJpegRgbPacketProcessorImpl *impl_;
 };
 
+#ifdef LIBFREENECT2_WITH_VT_SUPPORT
+class VTRgbPacketProcessorImpl;
+
+class LIBFREENECT2_API VTRgbPacketProcessor : public RgbPacketProcessor
+{
+public:
+  VTRgbPacketProcessor();
+  virtual ~VTRgbPacketProcessor();
+protected:
+  virtual void process(const libfreenect2::RgbPacket &packet);
+private:
+  VTRgbPacketProcessorImpl *impl_;
+};
+#endif
+
 } /* namespace libfreenect2 */
 #endif /* RGB_PACKET_PROCESSOR_H_ */

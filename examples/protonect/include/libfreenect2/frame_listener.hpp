@@ -49,22 +49,30 @@ class LIBFREENECT2_API Frame
   size_t width, height, bytes_per_pixel;
   unsigned char* data;
 
-  Frame(size_t width, size_t height, size_t bytes_per_pixel) :
+  Frame(size_t width, size_t height, size_t bytes_per_pixel, unsigned char* _data = NULL) :
     width(width),
     height(height),
-    bytes_per_pixel(bytes_per_pixel)
+    bytes_per_pixel(bytes_per_pixel),
+    rawdata(NULL),
+    data(_data)
   {
-    const size_t alignment = 64;
-    size_t space = width * height * bytes_per_pixel + alignment;
-    rawdata = new unsigned char[space];
-    uintptr_t ptr = reinterpret_cast<uintptr_t>(rawdata);
-    uintptr_t aligned = (ptr - 1u + alignment) & -alignment;
-    data = reinterpret_cast<unsigned char *>(aligned);
+    if (data == NULL)
+    {
+      const size_t alignment = 64;
+      size_t space = width * height * bytes_per_pixel + alignment;
+      rawdata = new unsigned char[space];
+      uintptr_t ptr = reinterpret_cast<uintptr_t>(rawdata);
+      uintptr_t aligned = (ptr - 1u + alignment) & -alignment;
+      data = reinterpret_cast<unsigned char *>(aligned);
+    }
   }
 
-  ~Frame()
+  virtual ~Frame()
   {
-    delete[] rawdata;
+    if (rawdata)
+    {
+      delete[] rawdata;
+    }
   }
 
   protected:
